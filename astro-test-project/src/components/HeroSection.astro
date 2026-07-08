@@ -1,0 +1,263 @@
+---
+const stats = [
+  { value: '24/7', label: 'Support' },
+  { value: '150+', label: 'Launches' },
+  { value: '4.9/5', label: 'Rated' },
+];
+---
+
+<section class="hero">
+  <div class="hero__content">
+    <p class="eyebrow">Launch faster with a polished start</p>
+    <h1>Design stunning web experiences in minutes.</h1>
+    <p class="description">
+      Build a bold first impression with a clean layout, crisp copy, and a call-to-action that feels effortless.
+    </p>
+    <div class="actions">
+      <a href="#" class="btn btn--primary">Start free</a>
+      <a href="#" class="btn btn--secondary">See demo</a>
+    </div>
+    <ul class="stats" aria-label="Highlights">
+      {stats.map((item) => (
+        <li>
+          <strong>{item.value}</strong>
+          <span>{item.label}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="hero__visual" aria-hidden="true">
+    <div class="card card--main">
+      <div class="card__top">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="card__body">
+        <div class="pill">New release</div>
+        <h2>Creative Studio</h2>
+        <p>Motion, branding, and product design.</p>
+        <div class="mini-bars">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    <div class="card card--floating">
+      <p>Weekly growth</p>
+      <strong>+128%</strong>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 3rem;
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #cbd5ff;
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 4vw, 4rem);
+    line-height: 1.05;
+    margin: 0 0 1rem;
+    color: white;
+  }
+
+  .description {
+    font-size: 1.05rem;
+    color: #d4dcff;
+    max-width: 560px;
+    margin-bottom: 1.5rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.9rem 1.3rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn--primary {
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    color: white;
+    box-shadow: 0 12px 30px rgba(76, 29, 149, 0.25);
+  }
+
+  .btn--secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .stats {
+    display: flex;
+    gap: 1.2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-wrap: wrap;
+  }
+
+  .stats li {
+    min-width: 90px;
+    padding: 0.7rem 0.9rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+  }
+
+  .stats strong {
+    display: block;
+    color: white;
+    font-size: 1.05rem;
+  }
+
+  .stats span {
+    color: #d4dcff;
+    font-size: 0.88rem;
+  }
+
+  .hero__visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    color: #111827;
+    border-radius: 1.5rem;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+  }
+
+  .card--main {
+    width: min(100%, 400px);
+    padding: 1rem;
+  }
+
+  .card__top {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .card__top span {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 999px;
+    background: #cbd5e1;
+  }
+
+  .card__body {
+    padding: 1rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    background: #ede9fe;
+    color: #6d28d9;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+  }
+
+  .card__body h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.35rem;
+    color: #111827;
+  }
+
+  .card__body p {
+    margin: 0 0 1rem;
+    color: #475569;
+  }
+
+  .mini-bars {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .mini-bars span {
+    display: block;
+    height: 0.75rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+  }
+
+  .mini-bars span:nth-child(1) { width: 50px; }
+  .mini-bars span:nth-child(2) { width: 70px; }
+  .mini-bars span:nth-child(3) { width: 90px; }
+
+  .card--floating {
+    position: absolute;
+    right: -1rem;
+    bottom: 2rem;
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .card--floating p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+
+  .card--floating strong {
+    font-size: 1.25rem;
+    color: #111827;
+  }
+
+  @media (max-width: 860px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding-top: 2.5rem;
+    }
+
+    .hero__visual {
+      margin-top: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
+</style>
