@@ -1,3 +1,9 @@
+---
+import NavBar from '../components/NavBar.astro';
+
+const { title = 'Astro Test Project' } = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -6,10 +12,13 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{title}</title>
 	</head>
 	<body>
-		<slot />
+		<NavBar />
+		<main>
+			<slot />
+		</main>
 	</body>
 </html>
 
@@ -27,7 +36,12 @@
 		color: #f8fafc;
 	}
 
+	main {
+		padding: 1.5rem 1rem 3rem;
+	}
+
 	a {
 		color: inherit;
+		text-decoration: none;
 	}
 </style>

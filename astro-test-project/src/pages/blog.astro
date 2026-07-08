@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Blog">
+  <section class="page-card">
+    <p class="eyebrow">Blog</p>
+    <h1>Testing page transitions.</h1>
+    <p>
+      Open a few different navigation links and watch how each page loads in a lightweight setup.
+    </p>
+    <article class="post">
+      <h2>Performance checklist</h2>
+      <p>Keep content simple, assets small, and navigation consistent.</p>
+    </article>
+  </section>
+</Layout>
+
+<style>
+  .page-card {
+    max-width: 760px;
+    margin: 2rem auto 0;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 50px rgba(2, 6, 23, 0.28);
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: #cbd5ff;
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    margin: 0 0 0.8rem;
+    color: white;
+  }
+
+  p {
+    color: #dbe4ff;
+    line-height: 1.7;
+  }
+
+  .post {
+    margin-top: 1.2rem;
+    padding: 1rem 1.2rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.12);
+  }
+</style>
