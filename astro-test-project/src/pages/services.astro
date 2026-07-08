@@ -7,13 +7,17 @@ import Layout from '../layouts/Layout.astro';
     <p class="eyebrow">Services</p>
     <h1>Another route, another feel.</h1>
     <p>
-      Use this page to view how a different route loads and renders with the same navigation shell.
+      This page showcases a richer service layout so you can compare how a fuller article-based screen loads compared with a minimal landing page. The content balances explanation, imagery, and practical detail without becoming overwhelming.
     </p>
+    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80" alt="People collaborating in a modern office" />
     <div class="grid">
       <article>Speed audits</article>
       <article>Performance reviews</article>
       <article>Design systems</article>
     </div>
+    <p>
+      Each service block is intentionally short and scannable, which makes this page useful for testing how quickly content becomes readable and how strong the visual structure feels after navigation.
+    </p>
   </section>
 </Layout>
 
@@ -44,14 +48,22 @@ import Layout from '../layouts/Layout.astro';
 
   p {
     color: #dbe4ff;
-    line-height: 1.7;
+    line-height: 1.8;
+  }
+
+  img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 1rem;
+    margin: 1rem 0;
   }
 
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1rem;
-    margin-top: 1.3rem;
+    margin: 1.3rem 0;
   }
 
   .grid article {
