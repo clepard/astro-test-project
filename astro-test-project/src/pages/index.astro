@@ -1,199 +1,251 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const slides = [
+	{ number: '01', title: 'Solar Drift', kicker: 'Sahara · Morocco', copy: 'Move through a landscape shaped by light, wind, and an endless horizon.', theme: 'sunset', stat: '32°C', label: 'Golden hour' },
+	{ number: '02', title: 'Silent North', kicker: 'Lofoten · Norway', copy: 'Find sharp peaks, glassy water, and small moments of perfect northern calm.', theme: 'arctic', stat: '68°N', label: 'Polar escape' },
+	{ number: '03', title: 'After Dark', kicker: 'Tokyo · Japan', copy: 'Follow the electric pulse through side streets, rooftops, and midnight color.', theme: 'neon', stat: '2:14', label: 'Night edition' },
+	{ number: '04', title: 'Wild Current', kicker: 'Madeira · Portugal', copy: 'Trace the Atlantic edge where deep green cliffs fall into restless blue.', theme: 'ocean', stat: '740m', label: 'Above sea' },
+	{ number: '05', title: 'Soft Geometry', kicker: 'Cappadocia · Türkiye', copy: 'Float over ancient stone formations as the first morning colors appear.', theme: 'clay', stat: '05:40', label: 'First flight' },
+];
 ---
 
-<Layout title="Todo — stay focused">
-	<main class="app-shell">
-		<section class="todo-app" aria-labelledby="page-title">
-			<header class="app-header">
-				<div>
-					<p class="date" id="today"></p>
-					<h1 id="page-title">Today</h1>
-				</div>
-				<div class="progress-ring" aria-label="Task progress">
-					<svg viewBox="0 0 44 44" aria-hidden="true">
-						<circle class="ring-track" cx="22" cy="22" r="18"></circle>
-						<circle class="ring-value" cx="22" cy="22" r="18"></circle>
-					</svg>
-					<span id="progress-label">0%</span>
-				</div>
-			</header>
+<Layout title="Elsewhere — Immersive Carousel">
+	<main class="page">
+		<div class="ambient ambient--one"></div>
+		<div class="ambient ambient--two"></div>
 
-			<form class="add-form" id="todo-form">
-				<label class="sr-only" for="todo-input">Add a task</label>
-				<span class="plus" aria-hidden="true">+</span>
-				<input id="todo-input" name="task" type="text" maxlength="120" placeholder="What needs to be done?" autocomplete="off" required />
-				<button type="submit">Add task</button>
-			</form>
+		<header class="site-header">
+			<a class="brand" href="#top" aria-label="Elsewhere home">
+				<span class="brand-mark">E</span>
+				<span>ELSEWHERE</span>
+			</a>
+			<p>Curated escapes for curious minds</p>
+			<button class="menu-button" type="button" aria-label="Open menu"><span></span><span></span></button>
+		</header>
 
-			<div class="toolbar">
-				<div class="filters" aria-label="Filter tasks">
-					<button class="filter active" type="button" data-filter="all">All</button>
-					<button class="filter" type="button" data-filter="active">Active</button>
-					<button class="filter" type="button" data-filter="completed">Completed</button>
-				</div>
-				<button class="clear-button" id="clear-completed" type="button">Clear completed</button>
+		<section class="hero" id="top" aria-labelledby="page-title">
+			<div class="intro">
+				<p class="eyebrow"><span></span> Selected journeys · 2026</p>
+				<h1 id="page-title">Go where you<br /><em>feel alive.</em></h1>
+				<p class="intro-copy">Five extraordinary places. One fluid journey. Drag, swipe, or use the arrows to explore.</p>
 			</div>
 
-			<ul class="todo-list" id="todo-list" aria-live="polite"></ul>
-
-			<div class="empty-state" id="empty-state" hidden>
-				<div class="empty-check" aria-hidden="true">✓</div>
-				<h2>Nothing here</h2>
-				<p>Add a task or switch filters.</p>
+			<div class="carousel" data-carousel tabindex="0" aria-roledescription="carousel" aria-label="Featured destinations">
+				<div class="carousel-track" data-track>
+					{slides.map((slide, index) => (
+						<article class:list={['card', `card--${slide.theme}`, { active: index === 0 }]} data-slide data-index={index} aria-label={`${index + 1} of ${slides.length}: ${slide.title}`}>
+							<div class="card-art" aria-hidden="true">
+								<div class="orb"></div><div class="horizon"></div><div class="grain"></div>
+							</div>
+							<div class="card-shade"></div>
+							<header class="card-top"><span>{slide.number}</span><span>{slide.label}</span></header>
+							<div class="card-content">
+								<p>{slide.kicker}</p>
+								<h2>{slide.title}</h2>
+								<div class="card-detail">
+									<p>{slide.copy}</p>
+									<a href={`#${slide.theme}`} aria-label={`Explore ${slide.title}`}>Explore <span>↗</span></a>
+								</div>
+							</div>
+							<div class="card-stat"><strong>{slide.stat}</strong></div>
+						</article>
+					))}
+				</div>
 			</div>
 
-			<footer class="app-footer">
-				<span id="task-count">0 tasks left</span>
-				<span>Saved on this device</span>
-			</footer>
+			<div class="controls">
+				<div class="arrow-group">
+					<button class="arrow" type="button" data-prev aria-label="Previous destination">←</button>
+					<button class="arrow" type="button" data-next aria-label="Next destination">→</button>
+				</div>
+				<div class="progress-wrap">
+					<span class="current" data-current>01</span>
+					<div class="progress"><span data-progress></span></div>
+					<span>0{slides.length}</span>
+				</div>
+				<button class="pause" type="button" data-pause aria-label="Pause autoplay"><span>Ⅱ</span> Auto journey</button>
+			</div>
 		</section>
+
+		<footer class="footer"><span>Scroll to explore</span><span>Built with Astro + motion</span></footer>
 	</main>
 </Layout>
 
 <script>
-	type Todo = { id: number; text: string; completed: boolean };
-	const storageKey = 'astro-todo-items';
-	const defaultTodos: Todo[] = [
-		{ id: 1, text: 'Plan the day', completed: true },
-		{ id: 2, text: 'Finish the most important task', completed: false },
-		{ id: 3, text: 'Take a proper break', completed: false },
-	];
+	const root = document.querySelector<HTMLElement>('[data-carousel]')!;
+	const track = document.querySelector<HTMLElement>('[data-track]')!;
+	const cards = [...document.querySelectorAll<HTMLElement>('[data-slide]')];
+	const prev = document.querySelector<HTMLButtonElement>('[data-prev]')!;
+	const next = document.querySelector<HTMLButtonElement>('[data-next]')!;
+	const currentLabel = document.querySelector<HTMLElement>('[data-current]')!;
+	const progress = document.querySelector<HTMLElement>('[data-progress]')!;
+	const pause = document.querySelector<HTMLButtonElement>('[data-pause]')!;
+	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	let activeIndex = 0;
+	let autoplay = !reduceMotion;
+	let timer = 0;
+	let pointerStart = 0;
+	let pointerNow = 0;
+	let dragged = false;
 
-	const form = document.querySelector<HTMLFormElement>('#todo-form')!;
-	const input = document.querySelector<HTMLInputElement>('#todo-input')!;
-	const list = document.querySelector<HTMLUListElement>('#todo-list')!;
-	const count = document.querySelector<HTMLElement>('#task-count')!;
-	const empty = document.querySelector<HTMLElement>('#empty-state')!;
-	const clearButton = document.querySelector<HTMLButtonElement>('#clear-completed')!;
-	const progressLabel = document.querySelector<HTMLElement>('#progress-label')!;
-	const progressRing = document.querySelector<SVGCircleElement>('.ring-value')!;
-	const filters = [...document.querySelectorAll<HTMLButtonElement>('.filter')];
-	let activeFilter = 'all';
-	let todos: Todo[];
-
-	try { todos = JSON.parse(localStorage.getItem(storageKey) || '') || defaultTodos; }
-	catch { todos = defaultTodos; }
-
-	const save = () => localStorage.setItem(storageKey, JSON.stringify(todos));
-	const visibleTodos = () => todos.filter((todo) => activeFilter === 'all' || (activeFilter === 'completed' ? todo.completed : !todo.completed));
-	const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]!);
-
-	function render() {
-		const visible = visibleTodos();
-		list.innerHTML = visible.map((todo) => `
-			<li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
-				<label class="check-wrap">
-					<input type="checkbox" ${todo.completed ? 'checked' : ''} aria-label="Mark ${escapeHtml(todo.text)} as complete" />
-					<span class="custom-check">✓</span>
-				</label>
-				<span class="todo-text">${escapeHtml(todo.text)}</span>
-				<button class="delete-button" type="button" aria-label="Delete ${escapeHtml(todo.text)}">×</button>
-			</li>`).join('');
-
-		const remaining = todos.filter((todo) => !todo.completed).length;
-		const completed = todos.length - remaining;
-		const percent = todos.length ? Math.round((completed / todos.length) * 100) : 0;
-		count.textContent = `${remaining} ${remaining === 1 ? 'task' : 'tasks'} left`;
-		progressLabel.textContent = `${percent}%`;
-		progressRing.style.strokeDashoffset = String(113 - (113 * percent / 100));
-		empty.hidden = visible.length !== 0;
-		list.hidden = visible.length === 0;
-		clearButton.disabled = completed === 0;
-		save();
+	function select(index: number, userInitiated = false) {
+		activeIndex = (index + cards.length) % cards.length;
+		cards.forEach((card, cardIndex) => {
+			const active = cardIndex === activeIndex;
+			let offset = cardIndex - activeIndex;
+			if (offset > cards.length / 2) offset -= cards.length;
+			if (offset < -cards.length / 2) offset += cards.length;
+			const distance = Math.abs(offset);
+			const step = Math.min(350, Math.max(190, root.clientWidth * 0.27));
+			card.style.setProperty('--x', `${offset * step}px`);
+			card.style.setProperty('--z', `${distance * -150}px`);
+			card.style.setProperty('--rotate', `${offset * -7}deg`);
+			card.style.setProperty('--card-scale', String(distance === 0 ? 1 : distance === 1 ? 0.82 : 0.66));
+			card.style.setProperty('--card-opacity', String(distance === 0 ? 1 : distance === 1 ? 0.34 : 0.035));
+			card.style.setProperty('--blur', `${distance === 2 ? 2 : 0}px`);
+			card.style.zIndex = String(10 - distance);
+			card.classList.toggle('active', active);
+			card.setAttribute('aria-current', active ? 'true' : 'false');
+		});
+		currentLabel.textContent = String(activeIndex + 1).padStart(2, '0');
+		progress.style.setProperty('--progress', `${((activeIndex + 1) / cards.length) * 100}%`);
+		if (userInitiated) restartTimer();
 	}
 
-	form.addEventListener('submit', (event) => {
-		event.preventDefault();
-		const text = input.value.trim();
-		if (!text) return;
-		todos.unshift({ id: Date.now(), text, completed: false });
-		input.value = '';
-		activeFilter = 'all';
-		filters.forEach((button) => button.classList.toggle('active', button.dataset.filter === activeFilter));
-		render();
+	function restartTimer() {
+		window.clearInterval(timer);
+		if (autoplay) timer = window.setInterval(() => select(activeIndex + 1), 4800);
+	}
+
+	prev.addEventListener('click', () => select(activeIndex - 1, true));
+	next.addEventListener('click', () => select(activeIndex + 1, true));
+	cards.forEach((card, index) => card.addEventListener('click', () => { if (!dragged && index !== activeIndex) select(index, true); }));
+	root.addEventListener('keydown', (event) => {
+		if (event.key === 'ArrowLeft') { event.preventDefault(); select(activeIndex - 1, true); }
+		if (event.key === 'ArrowRight') { event.preventDefault(); select(activeIndex + 1, true); }
 	});
-
-	list.addEventListener('change', (event) => {
-		const target = event.target as HTMLInputElement;
-		const item = target.closest<HTMLLIElement>('.todo-item');
-		if (!item || target.type !== 'checkbox') return;
-		const todo = todos.find((entry) => entry.id === Number(item.dataset.id));
-		if (todo) todo.completed = target.checked;
-		render();
+	root.addEventListener('pointerdown', (event) => { pointerStart = pointerNow = event.clientX; dragged = false; window.clearInterval(timer); root.setPointerCapture(event.pointerId); root.classList.add('dragging'); });
+	root.addEventListener('pointermove', (event) => { if (root.hasPointerCapture(event.pointerId)) { pointerNow = event.clientX; dragged = Math.abs(pointerNow - pointerStart) > 8; } });
+	root.addEventListener('pointerup', (event) => {
+		root.releasePointerCapture(event.pointerId); root.classList.remove('dragging');
+		const distance = pointerNow - pointerStart;
+		if (Math.abs(distance) > 45) select(activeIndex + (distance < 0 ? 1 : -1), true);
+		else restartTimer();
+		window.setTimeout(() => { dragged = false; }, 0);
 	});
-
-	list.addEventListener('click', (event) => {
-		const target = event.target as HTMLElement;
-		if (!target.closest('.delete-button')) return;
-		const item = target.closest<HTMLLIElement>('.todo-item');
-		todos = todos.filter((todo) => todo.id !== Number(item?.dataset.id));
-		render();
+	pause.addEventListener('click', () => {
+		autoplay = !autoplay;
+		pause.classList.toggle('paused', !autoplay);
+		pause.querySelector('span')!.textContent = autoplay ? 'Ⅱ' : '▶';
+		pause.setAttribute('aria-label', autoplay ? 'Pause autoplay' : 'Start autoplay');
+		restartTimer();
 	});
-
-	filters.forEach((button) => button.addEventListener('click', () => {
-		activeFilter = button.dataset.filter || 'all';
-		filters.forEach((item) => item.classList.toggle('active', item === button));
-		render();
-	}));
-
-	clearButton.addEventListener('click', () => { todos = todos.filter((todo) => !todo.completed); render(); });
-	document.querySelector('#today')!.textContent = new Intl.DateTimeFormat('en', { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date());
-	render();
+	document.addEventListener('visibilitychange', () => document.hidden ? window.clearInterval(timer) : restartTimer());
+	window.addEventListener('resize', () => select(activeIndex));
+	select(0); restartTimer();
 </script>
 
-<style is:global>
-	.app-shell { min-height: 100vh; padding: clamp(24px, 6vw, 72px) 18px; display: grid; place-items: start center; background: radial-gradient(circle at 20% 0%, #fffdf7 0, transparent 38%), #f6f3ed; }
-	.todo-app { width: min(100%, 720px); overflow: hidden; border: 1px solid rgba(42, 41, 38, .1); border-radius: 28px; background: rgba(255, 255, 255, .88); box-shadow: 0 28px 80px rgba(50, 46, 37, .12); backdrop-filter: blur(18px); }
-	.app-header { padding: clamp(28px, 6vw, 52px) clamp(24px, 6vw, 52px) 30px; display: flex; justify-content: space-between; align-items: center; }
-	.date { margin: 0 0 5px; color: #858075; font-size: .82rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
-	h1 { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(2.8rem, 9vw, 4.8rem); font-weight: 500; line-height: 1; letter-spacing: -.055em; }
-	.progress-ring { width: 66px; height: 66px; position: relative; display: grid; place-items: center; }
-	.progress-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
-	.progress-ring circle { fill: none; stroke-width: 3; }
-	.ring-track { stroke: #ebe7de; }
-	.ring-value { stroke: #de654d; stroke-linecap: round; stroke-dasharray: 113; stroke-dashoffset: 113; transition: stroke-dashoffset .35s ease; }
-	.progress-ring span { font-size: .78rem; font-weight: 750; }
-	.add-form { margin: 0 clamp(24px, 6vw, 52px); min-height: 62px; padding: 7px 7px 7px 20px; display: flex; align-items: center; gap: 12px; border: 1px solid #ded9cf; border-radius: 16px; background: #faf8f3; transition: border-color .2s, box-shadow .2s; }
-	.add-form:focus-within { border-color: #de654d; box-shadow: 0 0 0 4px rgba(222, 101, 77, .12); }
-	.plus { color: #de654d; font-size: 1.75rem; font-weight: 300; }
-	.add-form input { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: #20201e; }
-	.add-form input::placeholder { color: #99948a; }
-	.add-form button { align-self: stretch; padding: 0 18px; border: 0; border-radius: 10px; color: #fff; background: #20201e; font-size: .85rem; font-weight: 750; cursor: pointer; transition: transform .15s, background .15s; }
-	.add-form button:hover { background: #de654d; transform: translateY(-1px); }
-	.toolbar { padding: 26px clamp(24px, 6vw, 52px) 14px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-	.filters { display: flex; gap: 4px; padding: 4px; border-radius: 10px; background: #f2efe9; }
-	.filter, .clear-button { border: 0; background: transparent; cursor: pointer; }
-	.filter { padding: 7px 11px; border-radius: 7px; color: #7b776f; font-size: .76rem; font-weight: 700; }
-	.filter.active { color: #20201e; background: #fff; box-shadow: 0 2px 8px rgba(40, 38, 34, .08); }
-	.clear-button { color: #8c877d; font-size: .76rem; }
-	.clear-button:hover { color: #de654d; }
-	.clear-button:disabled { opacity: .35; cursor: default; }
-	.todo-list { margin: 0; padding: 0 clamp(24px, 6vw, 52px); list-style: none; }
-	.todo-item { min-height: 68px; display: grid; grid-template-columns: 30px 1fr 38px; align-items: center; gap: 12px; border-bottom: 1px solid #eeeae3; animation: enter .2s ease both; }
-	.check-wrap { width: 24px; height: 24px; position: relative; cursor: pointer; }
-	.check-wrap input { position: absolute; opacity: 0; }
-	.custom-check { width: 24px; height: 24px; display: grid; place-items: center; border: 1.5px solid #c9c4ba; border-radius: 50%; color: transparent; font-size: .72rem; transition: .2s; }
-	.check-wrap input:focus-visible + .custom-check { outline: 3px solid rgba(222,101,77,.25); }
-	.check-wrap input:checked + .custom-check { border-color: #de654d; color: #fff; background: #de654d; }
-	.todo-text { min-width: 0; overflow-wrap: anywhere; transition: color .2s; }
-	.completed .todo-text { color: #aaa59c; text-decoration: line-through; text-decoration-thickness: 1px; }
-	.delete-button { width: 32px; height: 32px; border: 0; border-radius: 50%; opacity: 0; color: #948f86; background: transparent; font-size: 1.4rem; cursor: pointer; transition: .15s; }
-	.todo-item:hover .delete-button, .delete-button:focus { opacity: 1; }
-	.delete-button:hover { color: #de654d; background: #fff0ec; }
-	.empty-state { padding: 50px 24px 58px; text-align: center; }
-	.empty-check { width: 54px; height: 54px; margin: auto; display: grid; place-items: center; border-radius: 50%; color: #8c877d; background: #f2efe9; font-size: 1.2rem; }
-	.empty-state h2 { margin: 15px 0 3px; font-family: Georgia, serif; font-weight: 500; }
-	.empty-state p { margin: 0; color: #969188; font-size: .88rem; }
-	.app-footer { margin-top: 24px; padding: 20px clamp(24px, 6vw, 52px); display: flex; justify-content: space-between; gap: 18px; border-top: 1px solid #eeeae3; color: #969188; font-size: .74rem; }
-	.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-	@keyframes enter { from { opacity: 0; transform: translateY(-4px); } }
-	@media (max-width: 560px) {
-		.app-shell { padding: 0; display: block; }
-		.todo-app { min-height: 100vh; border: 0; border-radius: 0; box-shadow: none; }
-		.app-header { padding-top: 34px; }
-		.toolbar { align-items: flex-start; flex-direction: column; }
-		.clear-button { align-self: flex-end; margin-top: -43px; }
-		.app-footer { flex-direction: column; gap: 3px; }
+<style>
+	:global(:root) { --ink: #f4f0e8; --muted: rgba(244,240,232,.58); --line: rgba(255,255,255,.14); }
+	:global(html) { scroll-behavior: smooth; }
+	:global(body) { overflow-x: hidden; color: var(--ink); background: #090a0f; }
+	:global(button), :global(a) { -webkit-tap-highlight-color: transparent; }
+	:global(a) { color: inherit; text-decoration: none; }
+	.page { min-height: 100vh; position: relative; overflow: hidden; isolation: isolate; background: radial-gradient(circle at 70% 15%, #1f2030 0, transparent 31%), linear-gradient(135deg, #111219, #07080c 70%); }
+	.page::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: .28; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E"); pointer-events: none; }
+	.ambient { position: absolute; width: 520px; height: 520px; z-index: -1; border-radius: 50%; filter: blur(130px); opacity: .16; pointer-events: none; animation: float 12s ease-in-out infinite alternate; }
+	.ambient--one { top: -300px; left: 5%; background: #e45d35; }
+	.ambient--two { right: -240px; bottom: -250px; background: #4f67ff; animation-delay: -4s; }
+	.site-header { width: min(1440px, calc(100% - 64px)); height: 110px; margin: auto; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+	.brand { display: flex; align-items: center; gap: 12px; font-size: .72rem; font-weight: 800; letter-spacing: .24em; }
+	.brand-mark { width: 33px; height: 33px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; font-family: Georgia, serif; font-size: 1rem; font-style: italic; }
+	.site-header > p { color: var(--muted); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+	.menu-button { width: 44px; height: 44px; display: grid; place-content: center; gap: 6px; border: 1px solid var(--line); border-radius: 50%; background: transparent; cursor: pointer; transition: .25s; }
+	.menu-button span { width: 17px; height: 1px; display: block; background: currentColor; transition: .25s; }
+	.menu-button span:last-child { transform: translateX(4px); }
+	.menu-button:hover { color: #111; background: #fff; transform: rotate(10deg); }
+	.menu-button:hover span:last-child { transform: none; }
+	.hero { width: min(1440px, calc(100% - 64px)); min-height: calc(100vh - 160px); margin: 0 auto; padding: clamp(36px, 5vh, 62px) 0 28px; display: grid; grid-template-rows: auto minmax(500px, 1fr) auto; align-items: center; }
+	.intro { position: relative; z-index: 20; text-align: center; }
+	.eyebrow { margin: 0 0 18px; display: flex; align-items: center; justify-content: center; gap: 11px; color: var(--muted); font-size: .67rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+	.eyebrow span { width: 26px; height: 1px; background: #ff7251; }
+	h1 { margin: 0 auto; max-width: 900px; font-size: clamp(3.2rem, 5.8vw, 6.4rem); font-weight: 450; letter-spacing: -.075em; line-height: .88; }
+	h1 em { color: #ff7658; font-family: Georgia, 'Times New Roman', serif; font-weight: 400; }
+	.intro-copy { max-width: 500px; margin: 24px auto 0; color: var(--muted); font-size: clamp(.84rem, 1vw, .98rem); line-height: 1.7; }
+	.carousel { width: 100%; height: min(59vh, 600px); min-height: 500px; position: relative; overflow: hidden; outline: 0; cursor: grab; perspective: 1200px; perspective-origin: 50% 48%; touch-action: pan-y; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+	.carousel.dragging { cursor: grabbing; }
+	.carousel-track { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+	.card { --x: 0px; --z: 0px; --rotate: 0deg; --card-scale: 1; --card-opacity: 1; --blur: 0px; width: clamp(340px, 31vw, 480px); height: min(56vh, 560px); min-height: 460px; position: absolute; left: 50%; top: 50%; overflow: hidden; isolation: isolate; contain: paint; backface-visibility: hidden; border: 1px solid rgba(255,255,255,.17); border-radius: 24px; background: #0b0c10; cursor: pointer; opacity: var(--card-opacity); filter: blur(var(--blur)) saturate(calc(.65 + var(--card-opacity) * .35)) brightness(calc(.62 + var(--card-opacity) * .38)); transform: translate3d(calc(-50% + var(--x)), -50%, var(--z)) rotateY(var(--rotate)) scale(var(--card-scale)); transform-origin: center; transition: transform .78s cubic-bezier(.18,.86,.22,1), opacity .24s ease-out, filter .28s ease-out, box-shadow .45s, scale .35s cubic-bezier(.2,.8,.2,1); will-change: transform, opacity; }
+	.card:hover:not(.active) { scale: 1.08; opacity: min(1, calc(var(--card-opacity) + .2)); filter: blur(0) saturate(.9) brightness(.88); }
+	.card.active { opacity: 1; filter: none; box-shadow: 0 35px 90px rgba(0,0,0,.58), 0 0 0 1px rgba(255,255,255,.08); transition: transform .78s cubic-bezier(.18,.86,.22,1), opacity .06s linear, filter .1s linear, box-shadow .35s, scale .35s cubic-bezier(.2,.8,.2,1); }
+	.card-art, .card-shade, .grain { position: absolute; inset: 0; }
+	.card-art { overflow: hidden; background: var(--sky); }
+	.card-art::before, .card-art::after { content: ''; position: absolute; transition: transform 1.2s cubic-bezier(.2,.8,.2,1); }
+	.card-shade { background: linear-gradient(to bottom, rgba(0,0,0,.04) 25%, rgba(4,5,8,.82) 100%); }
+	.grain { opacity: .2; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+	.card:hover .card-art::before, .card.active .card-art::before { transform: scale(1.07) translateY(-8px); }
+	.orb { position: absolute; width: 45%; aspect-ratio: 1; left: 27%; top: 19%; border-radius: 50%; background: var(--orb); box-shadow: 0 0 80px var(--glow); transition: transform .9s cubic-bezier(.2,.8,.2,1); }
+	.card:hover .orb, .card.active .orb { transform: translateY(-13px) scale(1.08); }
+	.horizon { position: absolute; left: -20%; right: -20%; bottom: -5%; height: 51%; border-radius: 50% 50% 0 0; background: var(--land); transform: rotate(var(--tilt, -4deg)); box-shadow: inset 0 25px 50px rgba(255,255,255,.08); }
+	.card--sunset { --sky: linear-gradient(#38172a, #d74b32 58%, #f6a64f); --orb: #ffd27d; --glow: rgba(255,173,72,.7); --land: linear-gradient(150deg,#7b2e20,#1c0d17); --tilt: -7deg; }
+	.card--arctic { --sky: linear-gradient(#9bc4ca, #d8e5df 55%, #6b8993); --orb: rgba(242,255,242,.9); --glow: rgba(220,255,246,.8); --land: linear-gradient(140deg,#334a57 0 26%,#e5eee8 27% 36%,#152b37 37%); --tilt: 4deg; }
+	.card--neon { --sky: linear-gradient(#150d35, #46235f 60%, #ed4277); --orb: #ff4caf; --glow: rgba(255,47,181,.75); --land: repeating-linear-gradient(90deg,#131025 0 9%,#24244f 10% 18%); --tilt: 0deg; }
+	.card--ocean { --sky: linear-gradient(#72c3c8, #228896 58%, #075466); --orb: #f7e09e; --glow: rgba(246,224,157,.5); --land: linear-gradient(145deg,#164e42,#072d32 55%,#031b29); --tilt: -11deg; }
+	.card--clay { --sky: linear-gradient(#a9796d, #e7ad8f 62%, #f4d5a8); --orb: #ffe4b1; --glow: rgba(255,226,165,.7); --land: linear-gradient(150deg,#9a513b,#4e292d); --tilt: 6deg; }
+	.card-top { position: absolute; z-index: 2; top: 30px; left: 27px; right: 27px; display: flex; justify-content: space-between; color: rgba(255,255,255,.72); font-size: .61rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+	.card-top span:last-child { opacity: 0; transform: translateY(8px); transition: .14s; }
+	.card.active .card-top span:last-child { opacity: 1; transform: none; }
+	.card-content { position: absolute; z-index: 2; left: 27px; right: 27px; bottom: 28px; opacity: .28; transition: opacity .14s ease-out; }
+	.card.active .card-content { opacity: 1; transition: opacity .12s linear; }
+	.card-content > p { margin: 0 0 8px; white-space: nowrap; color: rgba(255,255,255,.65); font-size: .64rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+	.card h2 { margin: 0; white-space: nowrap; font-family: Georgia, serif; font-size: clamp(1.65rem, 2.4vw, 2.8rem); font-weight: 400; letter-spacing: -.035em; }
+	.card-detail { max-height: 0; overflow: hidden; opacity: 0; transform: translateY(12px); transition: max-height .18s, opacity .1s, transform .16s; }
+	.card.active .card-detail { max-height: 155px; opacity: 1; transform: none; transition: max-height .45s .08s, opacity .28s .15s, transform .35s .12s; }
+	.card-detail p { max-width: 330px; margin: 17px 0 22px; color: rgba(255,255,255,.68); font-size: .81rem; line-height: 1.6; }
+	.card-detail a { display: inline-flex; align-items: center; gap: 18px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,.6); font-size: .72rem; font-weight: 750; text-transform: uppercase; letter-spacing: .1em; }
+	.card-detail a span { transition: transform .25s; }
+	.card-detail a:hover span { transform: translate(4px,-4px); }
+	.card-stat { position: absolute; z-index: 2; right: 25px; top: 50%; opacity: 0; transform: rotate(90deg) translateY(-10px); transform-origin: right top; color: rgba(255,255,255,.5); font-size: .68rem; letter-spacing: .14em; transition: .16s; }
+	.card.active .card-stat { opacity: 1; transform: rotate(90deg); }
+	.controls { width: min(920px, 100%); margin: 0 auto; display: grid; grid-template-columns: auto 1fr; gap: clamp(25px, 5vw, 75px); align-items: center; }
+	.arrow-group { display: flex; gap: 10px; }
+	.arrow { width: 50px; height: 50px; border: 1px solid var(--line); border-radius: 50%; color: #fff; background: transparent; cursor: pointer; transition: .25s; }
+	.arrow:hover { color: #0b0c10; background: #fff; transform: translateY(-3px); }
+	.progress-wrap { display: grid; grid-template-columns: 25px minmax(100px, 1fr) 25px auto; align-items: center; gap: 16px; color: var(--muted); font-size: .68rem; }
+	.current { color: #fff; }
+	.progress { height: 1px; background: rgba(255,255,255,.15); }
+	.progress span { width: var(--progress, 20%); height: 100%; display: block; background: #ff7658; transition: width .65s cubic-bezier(.2,.8,.2,1); }
+	.pause { justify-self: end; display: flex; align-items: center; gap: 9px; border: 0; color: var(--muted); background: transparent; font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+	.pause span { color: #ff7658; font-size: .72rem; }
+	.footer { width: min(1440px, calc(100% - 64px)); min-height: 50px; margin: auto; display: flex; justify-content: space-between; color: rgba(255,255,255,.3); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; }
+	@keyframes float { to { transform: translate(90px,60px) scale(1.15); } }
+	@media (max-width: 950px) {
+		.site-header { height: 88px; }
+		.site-header > p { display: none; }
+		.hero { min-height: auto; padding-top: 46px; grid-template-rows: auto minmax(510px, 60vh) auto; }
+		.intro { margin-bottom: 12px; }
+		h1 { font-size: clamp(3.7rem, 12vw, 6rem); }
+		.intro-copy { max-width: 520px; }
+		.carousel { width: calc(100vw - 20px); margin-left: calc((100% - 100vw + 20px) / 2); height: min(58vh, 560px); }
+		.card { width: min(66vw, 440px); height: min(55vh, 535px); }
+		.controls { grid-template-columns: auto 1fr; gap: 25px; }
+		.progress-wrap { grid-template-columns: 25px 1fr 25px; }
+		.pause { display: none; }
 	}
+	@media (max-width: 560px) {
+		.site-header, .hero, .footer { width: calc(100% - 36px); }
+		.site-header { height: 76px; }
+		.hero { padding-top: 34px; grid-template-rows: auto 500px auto; }
+		.eyebrow { margin-bottom: 17px; }
+		h1 { font-size: clamp(3.35rem, 15vw, 4.7rem); }
+		.intro-copy { margin-top: 24px; font-size: .85rem; }
+		.carousel { width: 100vw; height: 480px; min-height: 480px; margin-left: -18px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+		.card { width: min(72vw, 320px); height: 455px; min-height: 455px; border-radius: 20px; }
+		.card:hover:not(.active) { scale: 1.03; }
+		.controls { margin-bottom: 45px; }
+		.arrow { width: 44px; height: 44px; }
+		.footer { display: none; }
+	}
+	@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
 </style>
