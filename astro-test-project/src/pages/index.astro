@@ -35,20 +35,22 @@ const slides = [
 				<div class="carousel-track" data-track>
 					{slides.map((slide, index) => (
 						<article class:list={['card', `card--${slide.theme}`, { active: index === 0 }]} data-slide data-index={index} aria-label={`${index + 1} of ${slides.length}: ${slide.title}`}>
-							<div class="card-art" aria-hidden="true">
-								<div class="orb"></div><div class="horizon"></div><div class="grain"></div>
-							</div>
-							<div class="card-shade"></div>
-							<header class="card-top"><span>{slide.number}</span><span>{slide.label}</span></header>
-							<div class="card-content">
-								<p>{slide.kicker}</p>
-								<h2>{slide.title}</h2>
-								<div class="card-detail">
-									<p>{slide.copy}</p>
-									<a href={`#${slide.theme}`} aria-label={`Explore ${slide.title}`}>Explore <span>↗</span></a>
+							<div class="card-surface">
+								<div class="card-art" aria-hidden="true">
+									<div class="orb"></div><div class="horizon"></div><div class="grain"></div>
 								</div>
+								<div class="card-shade"></div>
+								<header class="card-top"><span>{slide.number}</span><span>{slide.label}</span></header>
+								<div class="card-content">
+									<p>{slide.kicker}</p>
+									<h2>{slide.title}</h2>
+									<div class="card-detail">
+										<p>{slide.copy}</p>
+										<a href={`#${slide.theme}`} aria-label={`Explore ${slide.title}`}>Explore <span>↗</span></a>
+									</div>
+								</div>
+								<div class="card-stat"><strong>{slide.stat}</strong></div>
 							</div>
-							<div class="card-stat"><strong>{slide.stat}</strong></div>
 						</article>
 					))}
 				</div>
@@ -87,7 +89,10 @@ const slides = [
 	let timer = 0;
 	let pointerStart = 0;
 	let pointerNow = 0;
+	let activePointer: number | null = null;
 	let dragged = false;
+	let viewportWidth = root.clientWidth;
+	let resizeFrame = 0;
 
 	function select(index: number, userInitiated = false) {
 		activeIndex = (index + cards.length) % cards.length;
@@ -125,15 +130,32 @@ const slides = [
 		if (event.key === 'ArrowLeft') { event.preventDefault(); select(activeIndex - 1, true); }
 		if (event.key === 'ArrowRight') { event.preventDefault(); select(activeIndex + 1, true); }
 	});
-	root.addEventListener('pointerdown', (event) => { pointerStart = pointerNow = event.clientX; dragged = false; window.clearInterval(timer); root.setPointerCapture(event.pointerId); root.classList.add('dragging'); });
-	root.addEventListener('pointermove', (event) => { if (root.hasPointerCapture(event.pointerId)) { pointerNow = event.clientX; dragged = Math.abs(pointerNow - pointerStart) > 8; } });
-	root.addEventListener('pointerup', (event) => {
-		root.releasePointerCapture(event.pointerId); root.classList.remove('dragging');
+	root.addEventListener('pointerdown', (event) => {
+		if (activePointer !== null) return;
+		activePointer = event.pointerId;
+		pointerStart = pointerNow = event.clientX;
+		dragged = false;
+		window.clearInterval(timer);
+		if (event.pointerType === 'mouse') root.setPointerCapture(event.pointerId);
+		root.classList.add('dragging');
+	});
+	root.addEventListener('pointermove', (event) => {
+		if (event.pointerId !== activePointer) return;
+		pointerNow = event.clientX;
+		dragged = Math.abs(pointerNow - pointerStart) > 8;
+	});
+	function finishSwipe(event: PointerEvent, cancelled = false) {
+		if (event.pointerId !== activePointer) return;
+		if (root.hasPointerCapture(event.pointerId)) root.releasePointerCapture(event.pointerId);
+		root.classList.remove('dragging');
 		const distance = pointerNow - pointerStart;
-		if (Math.abs(distance) > 45) select(activeIndex + (distance < 0 ? 1 : -1), true);
+		activePointer = null;
+		if (!cancelled && Math.abs(distance) > 45) select(activeIndex + (distance < 0 ? 1 : -1), true);
 		else restartTimer();
 		window.setTimeout(() => { dragged = false; }, 0);
-	});
+	}
+	root.addEventListener('pointerup', (event) => finishSwipe(event));
+	root.addEventListener('pointercancel', (event) => finishSwipe(event, true));
 	pause.addEventListener('click', () => {
 		autoplay = !autoplay;
 		pause.classList.toggle('paused', !autoplay);
@@ -142,7 +164,15 @@ const slides = [
 		restartTimer();
 	});
 	document.addEventListener('visibilitychange', () => document.hidden ? window.clearInterval(timer) : restartTimer());
-	window.addEventListener('resize', () => select(activeIndex));
+	window.addEventListener('resize', () => {
+		window.cancelAnimationFrame(resizeFrame);
+		resizeFrame = window.requestAnimationFrame(() => {
+			const nextWidth = root.clientWidth;
+			if (Math.abs(nextWidth - viewportWidth) < 3) return;
+			viewportWidth = nextWidth;
+			select(activeIndex);
+		});
+	});
 	select(0); restartTimer();
 </script>
 
@@ -176,9 +206,11 @@ const slides = [
 	.carousel { width: 100%; height: min(59vh, 600px); min-height: 500px; position: relative; overflow: hidden; outline: 0; cursor: grab; perspective: 1200px; perspective-origin: 50% 48%; touch-action: pan-y; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
 	.carousel.dragging { cursor: grabbing; }
 	.carousel-track { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
-	.card { --x: 0px; --z: 0px; --rotate: 0deg; --card-scale: 1; --card-opacity: 1; --blur: 0px; width: clamp(340px, 31vw, 480px); height: min(56vh, 560px); min-height: 460px; position: absolute; left: 50%; top: 50%; overflow: hidden; isolation: isolate; contain: paint; backface-visibility: hidden; border: 1px solid rgba(255,255,255,.17); border-radius: 24px; background: #0b0c10; cursor: pointer; opacity: var(--card-opacity); filter: blur(var(--blur)) saturate(calc(.65 + var(--card-opacity) * .35)) brightness(calc(.62 + var(--card-opacity) * .38)); transform: translate3d(calc(-50% + var(--x)), -50%, var(--z)) rotateY(var(--rotate)) scale(var(--card-scale)); transform-origin: center; transition: transform .78s cubic-bezier(.18,.86,.22,1), opacity .24s ease-out, filter .28s ease-out, box-shadow .45s, scale .35s cubic-bezier(.2,.8,.2,1); will-change: transform, opacity; }
-	.card:hover:not(.active) { scale: 1.08; opacity: min(1, calc(var(--card-opacity) + .2)); filter: blur(0) saturate(.9) brightness(.88); }
-	.card.active { opacity: 1; filter: none; box-shadow: 0 35px 90px rgba(0,0,0,.58), 0 0 0 1px rgba(255,255,255,.08); transition: transform .78s cubic-bezier(.18,.86,.22,1), opacity .06s linear, filter .1s linear, box-shadow .35s, scale .35s cubic-bezier(.2,.8,.2,1); }
+	.card { --x: 0px; --z: 0px; --rotate: 0deg; --card-scale: 1; --card-opacity: 1; --blur: 0px; width: clamp(340px, 31vw, 480px); height: min(56vh, 560px); min-height: 460px; position: absolute; left: 50%; top: 50%; backface-visibility: hidden; -webkit-backface-visibility: hidden; cursor: pointer; opacity: var(--card-opacity); filter: blur(var(--blur)) saturate(calc(.65 + var(--card-opacity) * .35)) brightness(calc(.62 + var(--card-opacity) * .38)); transform: translate3d(calc(-50% + var(--x)), -50%, var(--z)) rotateY(var(--rotate)) scale(var(--card-scale)); -webkit-transform: translate3d(calc(-50% + var(--x)), -50%, var(--z)) rotateY(var(--rotate)) scale(var(--card-scale)); transform-origin: center; transition: transform .78s cubic-bezier(.18,.86,.22,1), opacity .24s ease-out, filter .28s ease-out, scale .35s cubic-bezier(.2,.8,.2,1); will-change: transform, opacity; }
+	.card-surface { position: absolute; inset: 0; overflow: hidden; isolation: isolate; contain: paint; backface-visibility: hidden; -webkit-backface-visibility: hidden; border: 1px solid rgba(255,255,255,.17); border-radius: 24px; clip-path: inset(0 round 24px); background: #0b0c10; transform: translateZ(0); -webkit-transform: translateZ(0); transition: box-shadow .35s; }
+	@media (hover: hover) and (pointer: fine) { .card:hover:not(.active) { scale: 1.08; opacity: min(1, calc(var(--card-opacity) + .2)); filter: blur(0) saturate(.9) brightness(.88); } }
+	.card.active { opacity: 1; filter: none; transition: transform .78s cubic-bezier(.18,.86,.22,1), opacity .06s linear, filter .1s linear, scale .35s cubic-bezier(.2,.8,.2,1); }
+	.card.active .card-surface { box-shadow: 0 35px 90px rgba(0,0,0,.58), 0 0 0 1px rgba(255,255,255,.08); }
 	.card-art, .card-shade, .grain { position: absolute; inset: 0; }
 	.card-art { overflow: hidden; background: var(--sky); }
 	.card-art::before, .card-art::after { content: ''; position: absolute; transition: transform 1.2s cubic-bezier(.2,.8,.2,1); }
@@ -241,8 +273,11 @@ const slides = [
 		h1 { font-size: clamp(3.35rem, 15vw, 4.7rem); }
 		.intro-copy { margin-top: 24px; font-size: .85rem; }
 		.carousel { width: 100vw; height: 480px; min-height: 480px; margin-left: -18px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
-		.card { width: min(72vw, 320px); height: 455px; min-height: 455px; border-radius: 20px; }
-		.card:hover:not(.active) { scale: 1.03; }
+		.carousel { perspective: none; }
+		.carousel-track { transform-style: flat; }
+		.card { width: min(72vw, 320px); height: 455px; min-height: 455px; filter: none; transform: translate3d(calc(-50% + var(--x)), -50%, 0) scale(var(--card-scale)); -webkit-transform: translate3d(calc(-50% + var(--x)), -50%, 0) scale(var(--card-scale)); transition: transform .52s cubic-bezier(.2,.78,.25,1), opacity .2s ease-out; }
+		.card.active { transition: transform .52s cubic-bezier(.2,.78,.25,1), opacity .04s linear; }
+		.card-surface { border-radius: 20px; clip-path: inset(0 round 20px); }
 		.controls { margin-bottom: 45px; }
 		.arrow { width: 44px; height: 44px; }
 		.footer { display: none; }
