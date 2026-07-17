@@ -4,25 +4,21 @@ import Layout from '../layouts/Layout.astro';
 const activities = [
 	{
 		title: 'Riedlentės',
-		meta: 'Pradedantiesiems ir pažengusiems',
 		image: 'https://persimonas.lt/wp-content/uploads/2026/04/GSD24-179-optimized.webp',
 		position: 'center 48%',
 	},
 	{
 		title: 'BMX',
-		meta: 'Technika / Balansas / Triukai',
 		image: 'https://persimonas.lt/wp-content/uploads/2026/07/AJE_RUGSJ-21.webp',
 		position: 'center 54%',
 	},
 	{
 		title: 'Paspirtukai',
-		meta: 'Individualiai ir grupėse',
 		image: 'https://persimonas.lt/wp-content/uploads/2026/04/Skate-treiniruote.webp',
 		position: 'center',
 	},
 	{
 		title: 'Riedučiai',
-		meta: 'Judėjimas savo tempu',
 		image: 'https://persimonas.lt/wp-content/uploads/2026/07/aje-skate.webp',
 		position: 'center 35%',
 	},
@@ -180,17 +176,12 @@ const team = [
 			/>
 			<div class="hero-shade"></div>
 			<div class="hero-content">
-				<p class="hero-kicker">AJE+ SKATEPARK / KLAIPĖDA</p>
 				<h1>Pirmas uždaras<br />riedėjimo parkas<br />Klaipėdoje</h1>
 				<p>Tai vieta aktyviai veiklai, kūrybai ir saviraiškai, kur gimsta idėjos, stiprėja bendruomenė ir kiekvienas gali drąsiai išreikšti save.</p>
 				<div class="hero-actions">
 					<a class="pill pill-yellow" href="#treniruotes">Treniruotės su instruktoriumi <span class="icon-arrow" aria-hidden="true"></span></a>
 					<a class="pill pill-light" href="#atviros-sesijos">Atviros sesijos <span class="icon-arrow" aria-hidden="true"></span></a>
 				</div>
-			</div>
-			<div class="hero-location">
-				<span>Gluosnių skg. 2A-k2</span>
-				<strong>Klaipėda</strong>
 			</div>
 		</section>
 
@@ -204,17 +195,16 @@ const team = [
 			</div>
 
 			<div class="activity-grid">
-				{activities.map((activity, index) => (
+				{activities.map((activity) => (
 					<article class="editorial-card">
-						<a class="card-image" href="#kontaktai">
+						<a class="card-image" href="#kontaktai" aria-label={`${activity.title} – plačiau`}>
 							<img src={activity.image} alt="" style={`object-position: ${activity.position}`} loading="lazy" />
-							<span>0{index + 1}</span>
+							<span class="card-image-shade" aria-hidden="true"></span>
+							<span class="card-overlay">
+								<h3>{activity.title}</h3>
+								<span class="text-link">Plačiau <span class="icon-arrow" aria-hidden="true"></span></span>
+							</span>
 						</a>
-						<div class="yellow-meta">{activity.meta}</div>
-						<div class="card-copy">
-							<h3>{activity.title}</h3>
-							<a class="text-link" href="#kontaktai">Plačiau <span class="icon-arrow" aria-hidden="true"></span></a>
-						</div>
 					</article>
 				))}
 			</div>
@@ -515,6 +505,13 @@ const team = [
 				if (willOpen) {
 					group?.classList.add('open');
 					button.setAttribute('aria-expanded', 'true');
+					window.setTimeout(() => {
+						if (!group?.classList.contains('open')) return;
+						const submenu = group?.querySelector<HTMLElement>('[data-submenu]');
+						const firstLink = submenu?.querySelector<HTMLAnchorElement>('a');
+						firstLink?.focus({ preventScroll: true });
+						submenu?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+					}, 340);
 				}
 			});
 		});
@@ -1231,11 +1228,11 @@ const team = [
 	}
 
 	.card-image {
-		aspect-ratio: 4 / 3;
+		aspect-ratio: 3 / 4;
 		position: relative;
 		display: block;
 		overflow: hidden;
-		border-radius: 8px 8px 0 0;
+		border-radius: 10px;
 		background: var(--stone);
 	}
 
@@ -1252,45 +1249,37 @@ const team = [
 		filter: saturate(.95) contrast(1.04);
 	}
 
-	.card-image > span {
+	.card-image-shade {
 		position: absolute;
-		top: 12px;
-		left: 12px;
-		padding: 6px 8px;
-		color: var(--white);
-		border-radius: 4px;
-		background: var(--ink);
-		font-size: .58rem;
-		font-weight: 700;
+		inset: 0;
+		background: linear-gradient(0deg, rgba(17, 17, 17, .82) 0%, rgba(17, 17, 17, .08) 58%, transparent 76%);
+		transition: background 300ms ease;
 	}
 
-	.yellow-meta {
-		min-height: 36px;
+	.card-overlay {
+		position: absolute;
+		inset: auto 0 0;
 		display: flex;
-		align-items: center;
-		padding: 0 12px;
-		background: var(--yellow);
-		transition: .2s;
-	}
-
-	.editorial-card:hover .yellow-meta {
-		color: var(--white);
-		background: var(--violet);
-	}
-
-	.card-copy {
-		display: flex;
-		align-items: end;
+		align-items: flex-end;
 		justify-content: space-between;
-		gap: 15px;
-		padding-top: 16px;
+		gap: 16px;
+		padding: 22px;
+		color: var(--white);
 	}
 
-	.card-copy h3 {
+	.card-overlay h3 {
 		margin: 0;
-		font-size: clamp(1.35rem, 2vw, 1.9rem);
+		font-size: clamp(1.5rem, 2vw, 2rem);
 		font-weight: 650;
 		letter-spacing: -.045em;
+	}
+
+	.card-overlay .text-link {
+		flex: none;
+	}
+
+	.card-image:hover .card-image-shade {
+		background: linear-gradient(0deg, rgba(88, 51, 199, .86) 0%, rgba(17, 17, 17, .06) 62%, transparent 78%);
 	}
 
 	.open-feature {
@@ -2471,6 +2460,13 @@ const team = [
 			scroll-snap-align: start;
 		}
 
+		.card-overlay {
+			align-items: flex-start;
+			flex-direction: column;
+			gap: 12px;
+			padding: 18px;
+		}
+
 		.open-feature {
 			min-height: auto;
 			padding: 20px;
@@ -3260,7 +3256,7 @@ const team = [
 	/* Full-screen navigation */
 	.utility-header {
 		transition:
-			transform 360ms cubic-bezier(.22, 1, .36, 1),
+			transform 520ms cubic-bezier(.34, 1.45, .64, 1),
 			box-shadow 220ms ease;
 		will-change: transform;
 	}
@@ -3268,6 +3264,8 @@ const team = [
 	.utility-header.is-hidden {
 		pointer-events: none;
 		transform: translate(-50%, calc(-100% - 32px));
+		transition-timing-function: cubic-bezier(.4, 0, 1, 1), ease;
+		transition-duration: 360ms, 220ms;
 	}
 
 	.utility-inner {
@@ -3381,8 +3379,9 @@ const team = [
 	.fullscreen-nav {
 		width: min(100%, 1120px);
 		margin: auto;
-		padding: clamp(24px, 4vh, 48px) 0;
+		padding: clamp(24px, 4vh, 48px) 22px clamp(24px, 4vh, 48px) 0;
 		overflow-y: auto;
+		scrollbar-gutter: stable;
 		scrollbar-width: thin;
 		scrollbar-color: var(--ink) transparent;
 	}
@@ -3601,7 +3600,7 @@ const team = [
 		.fullscreen-nav {
 			width: 100%;
 			margin: 16px 0;
-			padding: 0;
+			padding: 0 14px 0 0;
 		}
 
 		.nav-group-trigger,
@@ -3640,7 +3639,8 @@ const team = [
 			border: 0;
 			border-bottom: 1px solid rgba(17, 17, 17, .3);
 			border-radius: 0;
-			font-size: .7rem;
+			font-size: .82rem;
+			line-height: 1.35;
 		}
 
 		.menu-bottom {
