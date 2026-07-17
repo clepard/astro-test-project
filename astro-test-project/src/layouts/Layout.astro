@@ -14,12 +14,6 @@ const {
 		<meta name="theme-color" content="#f5d94e" />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
-			rel="stylesheet"
-		/>
 		<title>{title}</title>
 	</head>
 	<body>
@@ -28,6 +22,14 @@ const {
 </html>
 
 <style is:global>
+	@font-face {
+		font-family: 'Lexend';
+		font-style: normal;
+		font-weight: 100 900;
+		font-display: swap;
+		src: url('/fonts/lexend-variable.ttf') format('truetype-variations');
+	}
+
 	:root {
 		--yellow: #f5d94e;
 		--violet: #5833c7;
