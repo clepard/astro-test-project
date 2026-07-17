@@ -146,7 +146,7 @@ const team = [
 
 			<div class="utility-actions">
 				<a class="schedule-link" href="#tvarkarastis">Tvarkaraštis</a>
-				<button class="menu-button" type="button" data-menu-button aria-expanded="false" aria-controls="site-menu">
+				<button class="menu-button" type="button" data-menu-button aria-label="Atidaryti meniu" aria-expanded="false" aria-controls="site-menu">
 					<span>Meniu</span>
 					<span class="menu-lines" aria-hidden="true"><i></i><i></i></span>
 				</button>
@@ -3519,8 +3519,8 @@ const team = [
 		pointer-events: none;
 		transform: translateX(100%);
 		transition:
-			transform 560ms cubic-bezier(.76, 0, .24, 1),
-			visibility 0s linear 560ms;
+			transform 460ms cubic-bezier(.76, 0, .24, 1),
+			visibility 0s linear 460ms;
 	}
 
 	.menu-overlay.open {
@@ -3528,7 +3528,7 @@ const team = [
 		pointer-events: auto;
 		transform: translateX(0);
 		transition:
-			transform 560ms cubic-bezier(.76, 0, .24, 1),
+			transform 460ms cubic-bezier(.76, 0, .24, 1),
 			visibility 0s;
 	}
 
@@ -3782,7 +3782,7 @@ const team = [
 		}
 
 		.menu-button > span:first-child {
-			display: none;
+			display: inline;
 		}
 
 		.menu-button > span:last-child {
